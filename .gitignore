@@ -4,10 +4,8 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # User-specific files
-<<<<<<< HEAD
+
 *.rsuser
-=======
->>>>>>> db7bcf22c42b672d20f85145749008bbaf14d4d0
 *.suo
 *.user
 *.userosscache
@@ -23,11 +21,8 @@
 [Rr]eleases/
 x64/
 x86/
-<<<<<<< HEAD
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
-=======
->>>>>>> db7bcf22c42b672d20f85145749008bbaf14d4d0
 bld/
 [Bb]in/
 [Oo]bj/
