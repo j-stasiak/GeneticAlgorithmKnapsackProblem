@@ -10,7 +10,7 @@ namespace GeneticAlgorithm.Mutations
         {
             var random = new Random();
 
-            for (var i = 0; i < population.Entities.Count; i++)
+            foreach (var entity in population.Entities)
             {
                 if (random.NextDouble() > MutationChance) continue;
 
@@ -22,8 +22,7 @@ namespace GeneticAlgorithm.Mutations
                     tab[k] = random.Next(population.Entities[0].Genome.Count);
                 }
 
-                population.Entities[i].Mutate(tab);
-
+                entity.Mutate(tab);
             }
 
             return population;
