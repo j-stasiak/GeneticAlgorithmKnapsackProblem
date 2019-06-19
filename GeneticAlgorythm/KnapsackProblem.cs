@@ -15,7 +15,8 @@ namespace GeneticAlgorithm
         
         private readonly int _backpackCapacity;
 
-        public List<Entity> BestEntities { get; }
+        public List<double> BestEntities { get; }
+        public List<double> BestHistoryEntities { get; }
         public List<double> MeanPopulation { get; }
         public ISelectionMethod SelectionMethod { get; set; }
         public IMutationMethod MutationMethod { get; set; }
@@ -27,8 +28,9 @@ namespace GeneticAlgorithm
             _items = items;
             _iterations = iterations;
 
-            BestEntities = new List<Entity>(iterations);
-            MeanPopulation = new List<double>();
+            BestEntities = new List<double>(iterations);
+            BestHistoryEntities = new List<double>(iterations);
+            MeanPopulation = new List<double>(iterations);
 
             initialPopulation.Initialize();
 
@@ -40,28 +42,33 @@ namespace GeneticAlgorithm
 
         public void Run()
         {
+            Console.WriteLine("GA is running...");
+
             for (var i = 0; i < _iterations; i++)
             {
-                Console.WriteLine(i);
                 CalculateFitness(_populations[i]);
-                BestEntities.Add(_populations[i].GetBestEntity());
+
+                BestEntities.Add(_populations[i].GetBestEntity().Fitness);
+                BestHistoryEntities.Add(BestEntities.Max());
+                MeanPopulation.Add(_populations[i].Entities.Select(x => x.Fitness).Sum() / _populations[i].Entities.Count);
+
                 var newPopulation = SelectionMethod.ConductSelection(_populations[i]);
                 newPopulation = CrossoverMethod.Crossover(newPopulation);
                 newPopulation = MutationMethod.Mutate(newPopulation);
                 _populations.Add(newPopulation);
-                MeanPopulation.Add(_populations[i].Entities.Select(x => x.Fitness).Sum() / _populations[i].Entities.Count);
             }
            
-            Console.WriteLine($"Finished ({BestEntities.Last().Fitness}, {BestEntities.Last().GetItemsWeight(_items)})");
+            Console.WriteLine("Finished");
         }
 
         public void ExportResults(string fileName)
         {
             using (var stream = new StreamWriter(fileName))
             {
+                stream.WriteLine("Population; Best Entities; Best History Entities; Mean Population");
                 for (var i = 0; i < BestEntities.Count; i++)
                 {
-                    stream.WriteLine($"{i + 1}; {BestEntities[i].Fitness}; {MeanPopulation[i]}");
+                    stream.WriteLine($"{i + 1}; {BestEntities[i]}; {BestHistoryEntities[i]}; {MeanPopulation[i]}");
                 }
             }
         }
